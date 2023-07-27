@@ -29,7 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.AbstractLangTest;
-import org.apache.commons.lang3.reflect.MethodUtils;
+import org.apache.commons.lang3.reflect.MethodUtilsGetters;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -1406,14 +1406,14 @@ public class EqualsBuilderTest extends AbstractLangTest {
         final Object secondObject = new Object();
 
         try {
-            final Method registerMethod = MethodUtils.getMatchingMethod(EqualsBuilder.class, "register", Object.class, Object.class);
+            final Method registerMethod = MethodUtilsGetters.getMatchingMethod(EqualsBuilder.class, "register", Object.class, Object.class);
             registerMethod.setAccessible(true);
             registerMethod.invoke(null, firstObject, secondObject);
 
             assertTrue(EqualsBuilder.isRegistered(firstObject, secondObject));
             assertTrue(EqualsBuilder.isRegistered(secondObject, firstObject)); // LANG-1349
         } finally {
-            final Method unregisterMethod = MethodUtils.getMatchingMethod(EqualsBuilder.class, "unregister", Object.class, Object.class);
+            final Method unregisterMethod = MethodUtilsGetters.getMatchingMethod(EqualsBuilder.class, "unregister", Object.class, Object.class);
             unregisterMethod.setAccessible(true);
             unregisterMethod.invoke(null, firstObject, secondObject);
         }

@@ -25,7 +25,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.commons.lang3.reflect.MethodUtils;
+import org.apache.commons.lang3.reflect.InokeMethods;
+import org.apache.commons.lang3.reflect.MethodUtilsGetters;
 
 /**
  * Provides some useful event-based utility methods.
@@ -46,7 +47,7 @@ public class EventUtils {
      */
     public static <L> void addEventListener(final Object eventSource, final Class<L> listenerType, final L listener) {
         try {
-            MethodUtils.invokeMethod(eventSource, "add" + listenerType.getSimpleName(), listener);
+            InokeMethods.invokeMethod(eventSource, "add" + listenerType.getSimpleName(), listener);
         } catch (final NoSuchMethodException e) {
             throw new IllegalArgumentException("Class " + eventSource.getClass().getName()
                     + " does not have a public add" + listenerType.getSimpleName()
@@ -109,9 +110,9 @@ public class EventUtils {
         public Object invoke(final Object proxy, final Method method, final Object[] parameters) throws Throwable {
             if (eventTypes.isEmpty() || eventTypes.contains(method.getName())) {
                 if (hasMatchingParametersMethod(method)) {
-                    return MethodUtils.invokeMethod(target, methodName, parameters);
+                    return InokeMethods.invokeMethod(target, methodName, parameters);
                 }
-                return MethodUtils.invokeMethod(target, methodName);
+                return InokeMethods.invokeMethod(target, methodName);
             }
             return null;
         }
@@ -123,7 +124,7 @@ public class EventUtils {
          * @return a flag whether the parameters could be matched
          */
         private boolean hasMatchingParametersMethod(final Method method) {
-            return MethodUtils.getAccessibleMethod(target.getClass(), methodName, method.getParameterTypes()) != null;
+            return MethodUtilsGetters.getAccessibleMethod(target.getClass(), methodName, method.getParameterTypes()) != null;
         }
     }
 }
