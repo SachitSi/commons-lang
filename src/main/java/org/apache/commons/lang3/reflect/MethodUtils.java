@@ -102,7 +102,7 @@ public class MethodUtils {
      * Invokes a named method without parameters.
      *
      * <p>This is a convenient wrapper for
-     * {@link #invokeMethod(Object object, boolean forceAccess, String methodName, Object[] args, Class[] parameterTypes)}.
+     * {@link #invokeMethod(InvokeMethodParam)}.
      * </p>
      *
      * @param object invoke method on this object
@@ -118,7 +118,7 @@ public class MethodUtils {
      */
     public static Object invokeMethod(final Object object, final boolean forceAccess, final String methodName)
             throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        return invokeMethod(object, forceAccess, methodName, ArrayUtils.EMPTY_OBJECT_ARRAY, null);
+        return invokeMethod(new InvokeMethodParam(object, new BooleanString(forceAccess, methodName, null), ArrayUtils.EMPTY_OBJECT_ARRAY));
     }
 
     /**
@@ -159,7 +159,7 @@ public class MethodUtils {
      * would match a {@code boolean} primitive.</p>
      *
      * <p>This is a convenient wrapper for
-     * {@link #invokeMethod(Object object, boolean forceAccess, String methodName, Object[] args, Class[] parameterTypes)}.
+     * {@link #invokeMethod(InvokeMethodParam)}.
      * </p>
      *
      * @param object invoke method on this object
@@ -178,7 +178,7 @@ public class MethodUtils {
             Object... args) throws NoSuchMethodException,
             IllegalAccessException, InvocationTargetException {
         args = ArrayUtils.nullToEmpty(args);
-        return invokeMethod(object, forceAccess, methodName, args, ClassUtils.toClass(args));
+        return invokeMethod(new InvokeMethodParam(object, new BooleanString(forceAccess, methodName, ClassUtils.toClass(args)), args));
     }
 
     /**
@@ -188,46 +188,40 @@ public class MethodUtils {
      * via passing in wrapping classes. So, for example, a {@link Boolean} object
      * would match a {@code boolean} primitive.</p>
      *
-     * @param object invoke method on this object
-     * @param forceAccess force access to invoke method even if it's not accessible
-     * @param methodName get method with this name
-     * @param args use these arguments - treat null as empty array
-     * @param parameterTypes match these parameters - treat null as empty array
-     * @return The value returned by the invoked method
-     *
-     * @throws NoSuchMethodException if there is no such accessible method
+     * @param invokeMethodParam@return The value returned by the invoked method
+     * @throws NoSuchMethodException     if there is no such accessible method
      * @throws InvocationTargetException wraps an exception thrown by the method invoked
-     * @throws IllegalAccessException if the requested method is not accessible via reflection
-     * @throws NullPointerException if the object or method name are {@code null}
+     * @throws IllegalAccessException    if the requested method is not accessible via reflection
+     * @throws NullPointerException      if the object or method name are {@code null}
      * @since 3.5
      */
-    public static Object invokeMethod(final Object object, final boolean forceAccess, final String methodName, Object[] args, Class<?>[] parameterTypes)
+    public static Object invokeMethod(InvokeMethodParam invokeMethodParam)
         throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        Objects.requireNonNull(object, "object");
-        parameterTypes = ArrayUtils.nullToEmpty(parameterTypes);
-        args = ArrayUtils.nullToEmpty(args);
+        Objects.requireNonNull(invokeMethodParam.getObject(), "object");
+        invokeMethodParam.setParameterTypes(ArrayUtils.nullToEmpty(invokeMethodParam.getParameterTypes()));
+        invokeMethodParam.setArgs(ArrayUtils.nullToEmpty(invokeMethodParam.getArgs()));
 
         final String messagePrefix;
         final Method method;
 
-        final Class<? extends Object> cls = object.getClass();
-        if (forceAccess) {
+        final Class<? extends Object> cls = invokeMethodParam.getObject().getClass();
+        if (invokeMethodParam.isForceAccess()) {
             messagePrefix = "No such method: ";
-            method = getMatchingMethod(cls, methodName, parameterTypes);
+            method = getMatchingMethod(cls, invokeMethodParam.getMethodName(), invokeMethodParam.getParameterTypes());
             if (method != null && !method.isAccessible()) {
                 method.setAccessible(true);
             }
         } else {
             messagePrefix = "No such accessible method: ";
-            method = getMatchingAccessibleMethod(cls, methodName, parameterTypes);
+            method = getMatchingAccessibleMethod(cls, invokeMethodParam.getMethodName(), invokeMethodParam.getParameterTypes());
         }
 
         if (method == null) {
-            throw new NoSuchMethodException(messagePrefix + methodName + "() on object: " + cls.getName());
+            throw new NoSuchMethodException(messagePrefix + invokeMethodParam.getMethodName() + "() on object: " + cls.getName());
         }
-        args = toVarArgs(method, args);
+        invokeMethodParam.setArgs(toVarArgs(method, invokeMethodParam.getArgs()));
 
-        return method.invoke(object, args);
+        return method.invoke(invokeMethodParam.getObject(), invokeMethodParam.getArgs());
     }
 
     /**
@@ -253,7 +247,7 @@ public class MethodUtils {
             final Object[] args, final Class<?>[] parameterTypes)
             throws NoSuchMethodException, IllegalAccessException,
             InvocationTargetException {
-        return invokeMethod(object, false, methodName, args, parameterTypes);
+        return invokeMethod(new InvokeMethodParam(object, new BooleanString(false, methodName, parameterTypes), args));
     }
 
     /**

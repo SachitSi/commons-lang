@@ -37,9 +37,9 @@ import java.util.stream.Stream;
 public class EnumUtils {
 
     private static final String CANNOT_STORE_S_S_VALUES_IN_S_BITS = "Cannot store %s %s values in %s bits";
-    private static final String ENUM_CLASS_MUST_BE_DEFINED = "EnumClass must be defined.";
+    private static final String ENUM_NOT_DEFINED = "EnumClass must be defined.";
     private static final String NULL_ELEMENTS_NOT_PERMITTED = "null elements not permitted";
-    private static final String S_DOES_NOT_SEEM_TO_BE_AN_ENUM_TYPE = "%s does not seem to be an Enum type";
+    private static final String INVALIDE_ENUM_TYPE = "%s does not seem to be an Enum type";
 
     /**
      * Validate {@code enumClass}.
@@ -51,8 +51,8 @@ public class EnumUtils {
      * @since 3.2
      */
     private static <E extends Enum<E>> Class<E> asEnum(final Class<E> enumClass) {
-        Objects.requireNonNull(enumClass, ENUM_CLASS_MUST_BE_DEFINED);
-        Validate.isTrue(enumClass.isEnum(), S_DOES_NOT_SEEM_TO_BE_AN_ENUM_TYPE, enumClass);
+        Objects.requireNonNull(enumClass, ENUM_NOT_DEFINED);
+        Validate.isTrue(enumClass.isEnum(), INVALIDE_ENUM_TYPE, enumClass);
         return enumClass;
     }
 
