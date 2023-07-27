@@ -19,16 +19,7 @@ package org.apache.commons.lang3;
 import java.io.IOException;
 import java.io.Writer;
 
-import org.apache.commons.lang3.text.translate.AggregateTranslator;
-import org.apache.commons.lang3.text.translate.CharSequenceTranslator;
-import org.apache.commons.lang3.text.translate.EntityArrays;
-import org.apache.commons.lang3.text.translate.JavaUnicodeEscaper;
-import org.apache.commons.lang3.text.translate.LookupTranslator;
-import org.apache.commons.lang3.text.translate.NumericEntityEscaper;
-import org.apache.commons.lang3.text.translate.NumericEntityUnescaper;
-import org.apache.commons.lang3.text.translate.OctalUnescaper;
-import org.apache.commons.lang3.text.translate.UnicodeUnescaper;
-import org.apache.commons.lang3.text.translate.UnicodeUnpairedSurrogateRemover;
+import org.apache.commons.lang3.text.translate.*;
 
 /**
  * Escapes and unescapes {@link String}s for
@@ -60,7 +51,7 @@ public class StringEscapeUtils {
               {"\"", "\\\""},
               {"\\", "\\\\"},
           }).with(
-            new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_ESCAPE())
+            new LookupTranslator(EscapeUitls.JAVA_CTRL_CHARS_ESCAPE())
           ).with(
             JavaUnicodeEscaper.outsideOf(32, 0x7f)
         );
@@ -83,7 +74,7 @@ public class StringEscapeUtils {
                             {"\\", "\\\\"},
                             {"/", "\\/"}
                       }),
-            new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_ESCAPE()),
+            new LookupTranslator(EscapeUitls.JAVA_CTRL_CHARS_ESCAPE()),
             JavaUnicodeEscaper.outsideOf(32, 0x7f)
         );
 
@@ -104,7 +95,7 @@ public class StringEscapeUtils {
                             {"\\", "\\\\"},
                             {"/", "\\/"}
                       }),
-            new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_ESCAPE()),
+            new LookupTranslator(EscapeUitls.JAVA_CTRL_CHARS_ESCAPE()),
             JavaUnicodeEscaper.outsideOf(32, 0x7f)
         );
 
@@ -121,8 +112,8 @@ public class StringEscapeUtils {
     @Deprecated
     public static final CharSequenceTranslator ESCAPE_XML =
         new AggregateTranslator(
-            new LookupTranslator(EntityArrays.BASIC_ESCAPE()),
-            new LookupTranslator(EntityArrays.APOS_ESCAPE())
+            new LookupTranslator(EscapeUitls.BASIC_ESCAPE()),
+            new LookupTranslator(EscapeUitls.APOS_ESCAPE())
         );
 
     /**
@@ -136,8 +127,8 @@ public class StringEscapeUtils {
      */
     public static final CharSequenceTranslator ESCAPE_XML10 =
         new AggregateTranslator(
-            new LookupTranslator(EntityArrays.BASIC_ESCAPE()),
-            new LookupTranslator(EntityArrays.APOS_ESCAPE()),
+            new LookupTranslator(EscapeUitls.BASIC_ESCAPE()),
+            new LookupTranslator(EscapeUitls.APOS_ESCAPE()),
             new LookupTranslator(
                     new String[][] {
                             { "\u0000", StringUtils.EMPTY },
@@ -188,8 +179,8 @@ public class StringEscapeUtils {
      */
     public static final CharSequenceTranslator ESCAPE_XML11 =
         new AggregateTranslator(
-            new LookupTranslator(EntityArrays.BASIC_ESCAPE()),
-            new LookupTranslator(EntityArrays.APOS_ESCAPE()),
+            new LookupTranslator(EscapeUitls.BASIC_ESCAPE()),
+            new LookupTranslator(EscapeUitls.APOS_ESCAPE()),
             new LookupTranslator(
                     new String[][] {
                             { "\u0000", StringUtils.EMPTY },
@@ -216,8 +207,8 @@ public class StringEscapeUtils {
      */
     public static final CharSequenceTranslator ESCAPE_HTML3 =
         new AggregateTranslator(
-            new LookupTranslator(EntityArrays.BASIC_ESCAPE()),
-            new LookupTranslator(EntityArrays.ISO8859_1_ESCAPE())
+            new LookupTranslator(EscapeUitls.BASIC_ESCAPE()),
+            new LookupTranslator(EscapeUitls.ISO8859_1_ESCAPE())
         );
 
     /**
@@ -231,9 +222,9 @@ public class StringEscapeUtils {
      */
     public static final CharSequenceTranslator ESCAPE_HTML4 =
         new AggregateTranslator(
-            new LookupTranslator(EntityArrays.BASIC_ESCAPE()),
-            new LookupTranslator(EntityArrays.ISO8859_1_ESCAPE()),
-            new LookupTranslator(EntityArrays.HTML40_EXTENDED_ESCAPE())
+            new LookupTranslator(EscapeUitls.BASIC_ESCAPE()),
+            new LookupTranslator(EscapeUitls.ISO8859_1_ESCAPE()),
+            new LookupTranslator(EscapeUitls.HTML40_EXTENDED_ESCAPE())
         );
 
     /**
@@ -291,7 +282,7 @@ public class StringEscapeUtils {
         new AggregateTranslator(
             new OctalUnescaper(),     // .between('\1', '\377'),
             new UnicodeUnescaper(),
-            new LookupTranslator(EntityArrays.JAVA_CTRL_CHARS_UNESCAPE()),
+            new LookupTranslator(UnescapeUtils.JAVA_CTRL_CHARS_UNESCAPE()),
             new LookupTranslator(
                       new String[][] {
                             {"\\\\", "\\"},
@@ -334,8 +325,8 @@ public class StringEscapeUtils {
      */
     public static final CharSequenceTranslator UNESCAPE_HTML3 =
         new AggregateTranslator(
-            new LookupTranslator(EntityArrays.BASIC_UNESCAPE()),
-            new LookupTranslator(EntityArrays.ISO8859_1_UNESCAPE()),
+            new LookupTranslator(UnescapeUtils.BASIC_UNESCAPE()),
+            new LookupTranslator(UnescapeUtils.ISO8859_1_UNESCAPE()),
             new NumericEntityUnescaper()
         );
 
@@ -350,9 +341,9 @@ public class StringEscapeUtils {
      */
     public static final CharSequenceTranslator UNESCAPE_HTML4 =
         new AggregateTranslator(
-            new LookupTranslator(EntityArrays.BASIC_UNESCAPE()),
-            new LookupTranslator(EntityArrays.ISO8859_1_UNESCAPE()),
-            new LookupTranslator(EntityArrays.HTML40_EXTENDED_UNESCAPE()),
+            new LookupTranslator(UnescapeUtils.BASIC_UNESCAPE()),
+            new LookupTranslator(UnescapeUtils.ISO8859_1_UNESCAPE()),
+            new LookupTranslator(UnescapeUtils.HTML40_EXTENDED_UNESCAPE()),
             new NumericEntityUnescaper()
         );
 
@@ -367,8 +358,8 @@ public class StringEscapeUtils {
      */
     public static final CharSequenceTranslator UNESCAPE_XML =
         new AggregateTranslator(
-            new LookupTranslator(EntityArrays.BASIC_UNESCAPE()),
-            new LookupTranslator(EntityArrays.APOS_UNESCAPE()),
+            new LookupTranslator(UnescapeUtils.BASIC_UNESCAPE()),
+            new LookupTranslator(UnescapeUtils.APOS_UNESCAPE()),
             new NumericEntityUnescaper()
         );
 

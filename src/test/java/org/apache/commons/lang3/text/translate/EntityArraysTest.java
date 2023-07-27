@@ -41,7 +41,7 @@ public class EntityArraysTest extends AbstractLangTest {
     public void testHTML40_EXTENDED_ESCAPE() {
         final Set<String> col0 = new HashSet<>();
         final Set<String> col1 = new HashSet<>();
-        final String [][] sa = EntityArrays.HTML40_EXTENDED_ESCAPE();
+        final String [][] sa = EscapeUitls.HTML40_EXTENDED_ESCAPE();
         for (int i =0; i <sa.length; i++) {
             assertTrue(col0.add(sa[i][0]), "Already added entry 0: "+i+" "+sa[i][0]);
             assertTrue(col1.add(sa[i][1]), "Already added entry 1: "+i+" "+sa[i][1]);
@@ -53,7 +53,7 @@ public class EntityArraysTest extends AbstractLangTest {
     public void testISO8859_1_ESCAPE() {
         final Set<String> col0 = new HashSet<>();
         final Set<String> col1 = new HashSet<>();
-        final String [][] sa = EntityArrays.ISO8859_1_ESCAPE();
+        final String [][] sa = EscapeUitls.ISO8859_1_ESCAPE();
         boolean success = true;
         for (int i =0; i <sa.length; i++) {
             final boolean add0 = col0.add(sa[i][0]);

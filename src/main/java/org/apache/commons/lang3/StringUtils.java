@@ -5258,6 +5258,10 @@ public class StringUtils {
         if (pads < padLen) {
             return padStr.substring(0, pads).concat(str);
         }
+        return getString(str, padStr, padLen, pads);
+    }
+
+    private static String getString(String str, String padStr, int padLen, int pads) {
         final char[] padding = new char[pads];
         final char[] padChars = padStr.toCharArray();
         for (int i = 0; i < pads; i++) {
